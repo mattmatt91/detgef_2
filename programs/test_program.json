@@ -1,0 +1,29 @@
+{
+    "1": {
+        "id": "heatingup",
+        "voltage": 4,
+        "mfc1": 50,
+        "mfc2": 10,
+        "mfc3": 30,
+        "mfc4": 50,
+        "duration": 4
+    },
+    "2": {
+        "id": "measuring",
+        "voltage": 4,
+        "mfc1": 50,
+        "mfc2": 10,
+        "mfc3": 30,
+        "mfc4": 50,
+        "duration": 5
+    },
+    "3": {
+        "id": "cooldown",
+        "voltage": 4,
+        "mfc1": 50,
+        "mfc2": 10,
+        "mfc3": 30,
+        "mfc4": 50,
+        "duration": 6
+    }
+}
