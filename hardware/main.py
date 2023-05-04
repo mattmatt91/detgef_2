@@ -1,10 +1,19 @@
 from fastapi import FastAPI
 from random import randint
 from datetime import datetime
-
+from hardware.relais.relais import Relais
+from hardware.multimeter.multimeter import Multimeter
+from hardware.powersupply.powersupply import Powersupply
+from hardware.gasmixer.gasmixer import Gasmixer
 
 app = FastAPI()
+mock = False
 
+if not mock:
+    powersupply = Powersupply()
+    multimeter = Multimeter()
+    gasmixer = Gasmixer()
+    relais = Relais()
 
 @app.get("/get_data")
 def get_sensor_data():
