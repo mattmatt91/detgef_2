@@ -1,0 +1,79 @@
+Übertragungsprotokoll MOX-Verteiler
+===================================
+
+Jede Anforderung beginnt mit 0xf0, gefolgt von einem Kommando (1 Byte) 
+und ggf. Parametern (1 oder 2 Bytes). Die Übertragung wird mit 
+0xff 0x0d 0x0a abgeschlossen (0x0d 0x0a entspricht '\r' '\n' bzw. CR+LF).
+Alle Werte werden als Big-Endian übertragen.
+
+Die Kommandos lauten wie folgt:
+
+COMMAND_GET_RELAY_STATUS (0x01):
+
+Parameter: Relay Index (0-15)
+Beispiel:  0xf0 0x01 0xff 0x0d 0x0a
+Rückgabe:  Relais-Status (1 byte 0x00 oder 0x01) 
+					 + Relais-Spannung (in V, 4 Bytes Float32) 
+					 + Relais-Strom (in A, 4 Bytes Float32) 
+					 + 0xff 0x0d 0x0a byte bei Erfolg,
+					 0xee + Fehlercode + 0xff 0x0d 0x0a sonst
+					 
+
+GET_SYSTEM_STATUS (0x02):
+
+Parameter: Keine
+Beispiel:  0xf0 0x02 0xff 0x0d 0x0a
+Rückgabe:  Relais-Status-Maske (2 byte) 
+					 + 16x Relais-Spannung (in V, je 4 Bytes Float32) = 64 Byte 
+					 + 16x Relais-Strom (in A, 4 Bytes Float32) = 64 byte 
+					 + 0xff 0x0d 0x0a = 133 byte bei Erfolg,
+					 0xee + Fehlercode + 0xff 0x0d 0x0a sonst
+
+COMMAND_SET_SINGLE_RELAY (0x03):
+
+Parameter: Relais-Index (1 Byte, 0-15), Ein/Aus (1 Byte, 1 oder 0)
+Beispiel:  0xf0 0x03 0x00 0x01 0xff 0x0d 0x0a -> Schalte Relais 1 an
+Beispiel:  0xf0 0x03 0x00 0x00 0xff 0x0d 0x0a -> Schalte Relais 1 ab
+Rückgabe:  0xaa 0xff 0x0d 0x0a bei Erfolg, 
+					 0xee + Fehlercode + 0xff 0x0d 0x0a sonst
+
+COMMAND_SET_RELAY_MASK (0x04):
+
+Parameter: Relais-Maske (2 Byte), 1 an Maskenposition = an 0 aus
+Beispiel 1: Maske 10101010 101010101 = 0xaa 0xaa 
+Beispiel 1: 0xf0 0x04 0xaa 0xaa 0xff 0x0d 0x0a
+
+Beispiel 2: Maske 01010101 01010101 = 0x55 0x55 
+Beispiel 2: 0xf0 0x04 0x5 0x55 0xff 0x0d 0x0a
+Rückgabe:   0xaa 0xff 0x0d 0x0a bei Erfolg,
+						0xee + Fehlercode + 0xff 0x0d 0x0a sonst
+
+COMMAND_SET_ALL_ON (0x05):
+
+Parameter: Keine
+Beispiel:  0xf0 0x05 0xff 0x0d 0x0a
+Rückgabe:  0xaa 0xff 0x0d 0x0a bei Erfolg, 
+					 0xee + Fehlercode + 0xff 0x0d 0x0a sonst
+           
+COMMAND_SET_ALL_OFF (0x06)
+
+Parameter: Keine
+Beispiel:  0xf0 0x06 0xff 0x0d 0x0a
+Rückgabe:  0xaa 0xff 0x0d 0x0a bei Erfolg, 
+					 0xee + Fehlercode + 0xff 0x0d 0x0a sonst
+
+COMMAND_SET_BOOTLOADER (0x07)
+
+Parameter: Password (Registry of Cpt. Kirks ship as Hex)
+Beispiel:  0xf0 0x07 0xPP 0xPP 0xff 0x0d 0x0a
+Rückgabe:  0xaa 0xff 0x0d 0x0a bei Erfolg, 
+					 0xee + Fehlercode + 0xff 0x0d 0x0a sonst
+
+
+
+Folgende Fehlercodes können zurückgegeben werden:
+
+INVALID_COMMAND   (0x01): Ungültiges Kommando erhalten
+INVALID_LENGTH    (0x02): Länge der Parameter ungültig
+INVALID_PARAMETER (0x03): Wert eines Parameters unzulässig
+COMMAND_FAILED    (0x04): Kommando fehlgeschlagen | Kommunikationsfehler
