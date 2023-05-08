@@ -6,29 +6,26 @@ ip = '127.0.0.1'
 port = '9010'
 
 
-def test_sensors():
+def test_set_data(data:dict):
+        print(f'setting data: {data}')
+        response = requests.post(f'http://{ip}:{port}/set_data', json=data)
+        print(response.json())
+
+
+def test_get_data():
     ...
-    # test get sensordata
-    # response = requests.get(f'http://{ip}:{port}/watersystem_get_data_sensor')
-    # print(response.json())
-
-    # test get state pumps
-    # response = requests.get(f'http://{ip}:{port}/watersystem_get_data_pumps')
-    # print(response.json())
-
-    # test set state
-    # data = {"pump": "ph_up", "state": True}
-    # requests.post(f'http://{ip}:{port}/watersystem_cmd', json=data)
-    # response = requests.get(f'http://{ip}:{port}/watersystem_get_data_pumps')
-    # print(response.json())
-    # time.sleep(2)
-    # data = {"pump": "ph_up", "state": False}
-    # requests.post(f'http://{ip}:{port}/watersystem_cmd', json=data)
 
 
 
 
 
 if __name__ == '__main__':
-
-    test_sensors()
+    d = {'id': 'heatingup', 'voltage': 4, 'mfc1': 50, 'mfc2': 10, 'mfc3': 30, 'mfc4': 50, 'duration': 4}
+    data = {'voltage':4, 'mfc1': 50, 'mfc2': 10, 'mfc3': 30}
+    test_set_data(data)
+    time.sleep(2)
+    data = {'voltage':1, 'mfc1': 40, 'mfc2': 60, 'mfc3': 10}
+    test_set_data(data)
+    time.sleep(2)
+    data = {'voltage':2, 'mfc1': 10, 'mfc2': 60, 'mfc3': 60}
+    test_set_data(data)

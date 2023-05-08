@@ -16,7 +16,7 @@ class Measurement():
     def __init__(self, path_prgram: str) -> None:
         self.program = hp.read_json(path_prgram)
         self.bd = Database()
-        self.add_schedule_get_data()
+        # self.add_schedule_get_data()
         self.add_schedule_set_data()
         self.current_step = "prolog"
         self.run_loop()
@@ -54,7 +54,11 @@ class Measurement():
 
     def run_loop(self):
         endtime = datetime.now() + timedelta(seconds=self.get_entire_duration())
-        while endtime > datetime.now():
-            schedule.run_pending()
-            time.sleep(1)
-        self.bd.data_to_csv(join(hp.create_folder("data"), "data.csv"))
+        try:
+            while endtime > datetime.now():
+                    schedule.run_pending()
+                    time.sleep(1)
+                    print('running')
+            self.bd.data_to_csv(join(hp.create_folder("data"), "data.csv"))
+        except KeyboardInterrupt:
+            self.bd.data_to_csv(join(hp.create_folder("data"), "data.csv"))

@@ -10,7 +10,7 @@
     },
     "2": {
         "id": "measuring",
-        "voltage": 4,
+        "voltage": 2,
         "mfc1": 50,
         "mfc2": 10,
         "mfc3": 30,
@@ -19,7 +19,7 @@
     },
     "3": {
         "id": "cooldown",
-        "voltage": 4,
+        "voltage": 1,
         "mfc1": 50,
         "mfc2": 10,
         "mfc3": 30,

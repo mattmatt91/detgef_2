@@ -1,28 +1,28 @@
 from fastapi import FastAPI
 from random import randint
 from datetime import datetime
-# from relais.relais import Relais
-# from multimeter.multimetermock import MultimeterMock
-# from powersupply.powersupply import Powersupply
-# from gasmixer.gasmixer import Gasmixer
+from relais.relais import Relais
+from multimeter.multimetermock import MultimeterMock
+from powersupply.powersupply import Powersupply
+from gasmixer.gasmixer import Gasmixer
 
 app = FastAPI()
 
-# multimeter = MultimeterMock()
-# powersupply = Powersupply()
-# gasmixer = Gasmixer()
-# relais = Relais()
+multimeter = MultimeterMock()
+powersupply = Powersupply()
+gasmixer = Gasmixer()
+relais = Relais()
 
 @app.get("/get_data")
 def get_sensor_data():
-    # data_powersupply_set = powersupply.get_all_set()
-    # data_powersupply_actual = powersupply.get_all_actual()
+    data_powersupply_set = powersupply.get_all_set()
+    data_powersupply_actual = powersupply.get_all_actual()
 
-    # data_multimeter = multimeter.get_data()
+    data_multimeter = multimeter.get_data()
 
-    # data_gasmixer = gasmixer.get_data()
+    data_gasmixer = gasmixer.get_data()
 
-    # data = data_powersupply_actual | data_powersupply_set | data_multimeter | data_gasmixer
+    data = data_powersupply_actual | data_powersupply_set | data_multimeter | data_gasmixer
     print(data)
     data = {
             "timestamp": datetime.now().strftime("%m/%d/%Y - %H:%M:%S"),
@@ -47,6 +47,10 @@ def get_sensor_data():
 @app.post("/set_data")
 def set_relais(data: dict):
     print(data)
+    powersupply.set_voltage(data['voltage'])
+    gasmixer.set_flow_cnl(1, data['mfc1'])
+    gasmixer.set_flow_cnl(2, data['mfc2'])
+    gasmixer.set_flow_cnl(3, data['mfc3'])
     response = True
     return {
         "success": response
