@@ -7,7 +7,7 @@ baudrate = 9600
 
 class Gasmixer():
     def __init__(self) -> None:
-        self.channels = read_json("hardware\\gasmixer\\config.json")
+        self.channels = read_json("gasmixer\\config.json")
         self.args = {
                     "port":port,
                     "baudrate":9600,
@@ -134,6 +134,9 @@ class Gasmixer():
             else:
                 return Exception(f"flow ({abs_value}ml) out of range for cnl {cnl} ")
         return mapped_values
+
+    def get_data(self):
+        return {'state':'ok'}
 
 def convert_to_ascii(text):
         ascii = [ord(i) for i in text]

@@ -1,2 +1,2 @@
 venv\Scripts\activate
-python hardware\gasmixer\gasmixer.py
+python hardware\powersupply\powersupply.py

@@ -2,12 +2,12 @@ import pyvisa
 from time import sleep
 
 
+address = 'ASRL12::INSTR'
+
 class Powersupply():
-    def __init__(self, address):
+    def __init__(self):
         rm = pyvisa.ResourceManager()
         rm.list_resources()
-        # print(colorama.Fore.GREEN, 'init powersupply')
-        # print(colorama.Fore.RESET)
         self.client = rm.open_resource(address)
         self.reset()
         # self.get_info()
@@ -24,6 +24,8 @@ class Powersupply():
         print(string)
 
     
+    # SETTER FUNCTIONS
+
     def set_voltage(self, voltage):
         try:
             while float(self.client.query('VOLTage?').split()[0]) != float(voltage):
@@ -48,9 +50,7 @@ class Powersupply():
         except:
             print('cannot set value')
 
-    # def set_input_resistance(self, resistance):
-    #     while float(self.client.query('POWer?').split()[0]) != float(resistance):
-    #         self.client.write(f'POW {float(resistance)}')
+    # GETTER FUNCTIONS
 
     def get_voltage_set(self):
         string = self.client.query(f'VOLT?')
@@ -92,13 +92,13 @@ class Powersupply():
         string = self.client.query(f'MEAS:ARR?')
         return string.split(',')
 
-    def get_data(self):
-        try:
-            data = self.get_all_actual() | self.get_all_set()
-            return data
-        except Exception as e:
-            print(f'Error reading powersupply: {e}, returning empty dict')
-            return {}
+    # def get_data(self):
+    #     try:
+    #         data = self.get_all_actual() | self.get_all_set()
+    #         return data
+    #     except Exception as e:
+    #         print(f'Error reading powersupply: {e}, returning empty dict')
+    #         return {}
 
     def supply_on(self):
         self.client.write('OUTP ON')
@@ -115,18 +115,21 @@ class Powersupply():
 
 
 if __name__ == '__main__':
-    powersupply = Powersupply('ASRL11::INSTR')
+    powersupply = Powersupply('ASRL12::INSTR')
     # powersupply = PowerSupply('ASRL5::INSTR')
     i = 0
     while True:
         i += 1
         i = i % 5
         powersupply.set_voltage(i)
+        powersupply.supply_on()
         powersupply.set_current(10)  # was ist der senke betrieb?
         powersupply.set_power(200)
-        powersupply.set_input_resistance(10)
-        powersupply.supply_on()
-        sleep(0.1)
-        print(powersupply.get_data())
-        powersupply.get_errors()
-        powersupply.get_data()
+        sleep(1)
+        powersupply.supply_off()
+        sleep(1)
+        print(powersupply.get_all_actual())
+        print(powersupply.get_all_set())
+        # print(powersupply.get_data())
+        # print(powersupply.get_errors())
+        # powersupply.get_data()
