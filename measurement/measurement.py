@@ -8,7 +8,7 @@ from os.path import join
 
 ip = '127.0.0.1'
 port = '9010'
-rate = 1
+rate = 10
 start_offset = 5
 path_data = "data"
 
@@ -16,10 +16,19 @@ class Measurement():
     def __init__(self, path_prgram: str) -> None:
         self.program = hp.read_json(path_prgram)
         self.bd = Database()
-        # self.add_schedule_get_data()
+        self.add_schedule_get_data()
         self.add_schedule_set_data()
         self.current_step = "prolog"
         self.run_loop()
+    
+
+    def start(self):
+        response  = requests.get(f'http://{ip}:{port}/start').json()
+        print(response)
+
+    def stop(self):
+        response  = requests.get(f'http://{ip}:{port}/stop').json()
+        print(response)
 
     def get_entire_duration(self):
         entire_duration = start_offset
@@ -42,23 +51,21 @@ class Measurement():
     def get_data(self):
         response = requests.get(f'http://{ip}:{port}/get_data').json()
         response["step_id"] = self.current_step
-        self.bd.write_data(response)
-        # print(response)
+        print(response)
 
     def set_data(self, data:dict):
         self.current_step = data['id']
-        print(f'setting data: {data}')
-        response = requests.post(f'http://{ip}:{port}/set_data', json=data)
-        # print(response.json())
+        requests.post(f'http://{ip}:{port}/set_data', json=data)
 
 
     def run_loop(self):
+        self.start()
+        time.sleep(2)
         endtime = datetime.now() + timedelta(seconds=self.get_entire_duration())
-        try:
-            while endtime > datetime.now():
-                    schedule.run_pending()
-                    time.sleep(1)
-                    print('running')
-            self.bd.data_to_csv(join(hp.create_folder("data"), "data.csv"))
-        except KeyboardInterrupt:
-            self.bd.data_to_csv(join(hp.create_folder("data"), "data.csv"))
+        while endtime > datetime.now():
+                schedule.run_pending()
+                time.sleep(1)
+                print(endtime-datetime.now())
+        self.bd.data_to_csv(join(hp.create_folder("data"), "data.csv"))
+        self.stop()
+        

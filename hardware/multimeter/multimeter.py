@@ -36,22 +36,20 @@ class Multimeter():
             self.client.write(
                 f":SENSe:RESistance:APERture {self.aperture}")
 
+    def init_device(self):
+        pass
+
     def get_errors(self):
         err = self.client.query("SYST:ERR?")
         return err
 
     def get_data(self):
-        # self.client.write(":READ?")
         sensors = ['S1', 'S2', 'S3', 'S4']
-        # try:
-
         data = self.client.query(f"READ?")
         data = [float(i) for i in data.split(',')]
-        # except:
-        #     data = [None for _ in sensors]
         result = {}
         for sensor, value in zip(sensors, data):
-            result[sensor + "_res_measured"] = value
+            result[sensor] = value
         return result
 
     def close(self):

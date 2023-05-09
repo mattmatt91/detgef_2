@@ -36,13 +36,46 @@ class Relais():
             # response = ser.read(10)  # read up to 10 bytes
             # print(response)
 
+    def get_one_state(self, number:int):
+        with serial.Serial(port, baudrate, timeout=1) as ser:
+            bytes_to_send = bytes([0xf0, 0x01, number, 0xff, 0x0d, 0x0a])
+            ser.write(bytes_to_send)
+            buffer = b''
+            while True:
+                data = ser.read()
+                buffer += data
+                if data == b'\n':
+                    break
+            if buffer[0] == 0:
+                return False
+            elif buffer[0] == 0:
+                return True
+    
+    def get_all_states(self):
+        data = {}
+        for i in range(15):
+            data[f'relais{i}'] = self.get_one_state(i)
+        return data
+
+
+     
+
+
             
 
 
 if __name__ == '__main__':
     relais = Relais()
+    relais.set_all_off()
     while True:
-        relais.set_one(1, True)
-        sleep(1)
-        relais.set_one(1, False)
-        sleep(1)
+        for i in range(16):
+            relais.set_one(i, True)
+        print(relais.get_all_states())
+        sleep(0.1)
+        for i in range(16):
+            relais.set_one(i, False)
+        print(relais.get_all_states())
+
+        sleep(0.1)
+        
+        # relais.get_all_states()
