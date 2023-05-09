@@ -51,6 +51,7 @@ class Measurement():
     def get_data(self):
         response = requests.get(f'http://{ip}:{port}/get_data').json()
         response["step_id"] = self.current_step
+        self.bd.write_data(response)
         print(response)
 
     def set_data(self, data:dict):
