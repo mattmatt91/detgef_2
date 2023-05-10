@@ -105,11 +105,10 @@ if __name__ == '__main__':
     powersupply.supply_on()
     powersupply.set_current(10)  # was ist der senke betrieb?
     powersupply.set_power(200)
-    powersupply.set_voltage(2.4)
-    sleep(5)
     for i in range(10):
 
         powersupply.set_voltage(i%5)
+        print(powersupply.get_data())
         sleep(1)
 
 
