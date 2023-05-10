@@ -4,7 +4,7 @@ import time
 address = 'USB0::0x2A8D::0x5101::MY58018230::INSTR'
 
 class Multimeter():
-    def __init__(self, address:str):
+    def __init__(self):
         rm = pyvisa.ResourceManager()
         print(rm.list_resources())
         self.client = rm.open_resource(address)
@@ -57,7 +57,7 @@ class Multimeter():
 
 
 if __name__ == '__main__':
-    keysightdaq970a = Multimeter(address)
+    keysightdaq970a = Multimeter()
     print(keysightdaq970a.get_errors())
     print(keysightdaq970a.get_data())
     print(keysightdaq970a.get_errors())

@@ -1,17 +1,29 @@
 from fastapi import FastAPI
 from random import randint
 from datetime import datetime
-from relais.relais import Relais
-from multimeter.multimetermock import MultimeterMock
-from powersupply.powersupply import Powersupply
-from gasmixer.gasmixer import Gasmixer
+
+mock = True
+
+if mock:
+    from relais.relaisMock import RelaisMock
+    from multimeter.multimeterMock import MultimeterMock
+    from powersupply.powersupplyMock import PowersupplyMock
+    from gasmixer.gasmixerMock import GasmixerMock
+    multimeter = MultimeterMock()
+    powersupply = PowersupplyMock()
+    gasmixer = GasmixerMock()
+    relais = RelaisMock()
+else:
+    from relais.relais import Relais
+    from multimeter.multimeter import Multimeter
+    from powersupply.powersupply import Powersupply
+    from gasmixer.gasmixer import Gasmixer
+    multimeter = Multimeter()
+    powersupply = Powersupply()
+    gasmixer = Gasmixer()
+    relais = Relais()
 
 app = FastAPI()
-
-multimeter = MultimeterMock()
-powersupply = Powersupply()
-gasmixer = Gasmixer()
-relais = Relais()
 
 @app.get("/get_data")
 def get_sensor_data():
