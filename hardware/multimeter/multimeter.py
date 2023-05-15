@@ -1,76 +1,59 @@
-address = 'USB0::0x2A8D::0x5101::MY58018230::INSTR'
 
-import pyvisa
-import time
+import pyvisa as visa
+import sys
 
+VISA_ADDRESS = 'USB0::0x2A8D::0x5101::MY58018230::0::INSTR'
 
-class KeysightDAQ970a():
-    def __init__(self, address=address):
-        rm = pyvisa.ResourceManager()
-        # print(rm.list_resources())
-        self.client = rm.open_resource(address)
-        self.aper_toggle = False
-        self.aperture = 0.06
-        self.nplc = 1
-        self.client.timeout = 10000  # set a delay
-        self.client.read_termination = '\n'
-        self.scanlist = "(@101) # ,102,103,104)"
-        print(self.client.query("*IDN?"))
-        self.client.write("*RST")
-        self.client.write(":SYSTem:BEEPer:STATe 0")
+class Multimeter():
+    def __init__(self):
+        try:
+            self.resourceManager = visa.ResourceManager()
+            self.session = self.resourceManager.open_resource(VISA_ADDRESS)
+        except visa.Error as ex:
+            print('Couldn\'t connect to \'%s\', exiting now...' % VISA_ADDRESS)
+            sys.exit()
+        if self.session.resource_name.startswith('ASRL') or self.session.resource_name.endswith('SOCKET'):
+            self.session.read_termination = '\n'
 
-    def set_up(self):
-        # set resistance
-        self.client.write(f"SENSe:RESistance ")
+        self.session.write('*IDN?')
+        idn = self.session.read()
+        # print('*IDN? returned: %s' % idn.rstrip('\n'))
 
-        # # set autorange
-        # self.client.write("CONF:RES")
-        # self.client.write("RES:RANG:AUTO 1")
-# 
-        # # aperture or nplc
-        # if self.aperture:
-        #     # disables aperture
-        #     self.client.write(f"CONF:FRES")
-        #     self.client.write(f"FRES:NPLC {self.nplc}")
-        # else:
-        #     self.client.write(
-        #         f":SENSe:RESistance:APERture:ENABle 1")
-        #     self.client.write(
-        #         f":SENSe:RESistance:APERture {self.aperture}")
+    def init_device(self):
+        # self.session.write("SET DefaultTimeout to 10")
+        self.session.write(":ROUTe:SCAN (@201,202,203,204)")
+        self.session.write("RES:RANG:AUTO 1")
+        # self.session.write(f"RES:NPLC 1")
 
     def get_errors(self):
-        err = self.client.query("SYST:ERR?")
+        err = self.session.query("SYST:ERR?")
         return err
 
     def get_data(self):
-        # self.client.write(":READ?")
         sensors = ['S1', 'S2', 'S3', 'S4']
-        try:
-            data = self.client.query(f"READ? {self.scanlist}")
-            data = [float(i) for i in data.split(',')]
-        except:
-             data = [None for _ in sensors]
-        result = {}
+        self.session.write(f"INIT")
+        self.session.write(':FETCh?')
+        data = self.session.read()
+        data = [float(i) for i in  data.split(',')]
+        data_dict = {}
         for sensor, value in zip(sensors, data):
-            result[sensor + "_res_measured"] = value
-        return result
+            data_dict[sensor] = value
+        return data_dict
+
 
     def close(self):
-        self.client.close()
+        self.session.close()
+        self.resourceManager.close()
 
 
 if __name__ == '__main__':
-    keysightdaq970a = KeysightDAQ970a()
-    print('after init: ',keysightdaq970a.get_errors())
+    multimeter = Multimeter()
+    multimeter.init_device()
     try:
-        keysightdaq970a.set_up()
-        print('after setup: ',keysightdaq970a.get_errors())
-        print(keysightdaq970a.get_data())
-        print('after fetch: ',keysightdaq970a.get_errors())
-        if 0:
-            for i in range(10):
-                print(keysightdaq970a.get_data())
-                print(keysightdaq970a.get_errors())
-                time.sleep(1)
+        # pass
+        for i in range(5):
+            print(multimeter.get_data())
+    except KeyboardInterrupt:
+        pass
     finally:
-            keysightdaq970a.close()
+            multimeter.close()

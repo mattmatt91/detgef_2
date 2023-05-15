@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from random import randint
 from datetime import datetime
 
-mock = True
+mock = False
 
 if mock:
     from relais.relaisMock import RelaisMock
@@ -14,6 +14,7 @@ if mock:
     gasmixer = GasmixerMock()
     relais = RelaisMock()
 else:
+
     from relais.relais import Relais
     from multimeter.multimeter import Multimeter
     from powersupply.powersupply import Powersupply
@@ -29,7 +30,7 @@ app = FastAPI()
 def get_sensor_data():
     data_powersupply = powersupply.get_data()
     data_multimeter = multimeter.get_data()
-    data_gasmixer = gasmixer.get_data()
+    # data_gasmixer = gasmixer.get_data()
     data_relais = relais.get_all_states()
 
     data = {
@@ -44,13 +45,13 @@ def get_sensor_data():
             "res_3": data_multimeter['S3'],
             "res_4": data_multimeter['S4'],
 
-            "flow_H2_set": data_gasmixer['H2_set'],
-            "flow_air_dry_set": data_gasmixer['air_dry_set'],
-            "flow_air_wet_set": data_gasmixer['air_wet_set'],
+            # "flow_H2_set": data_gasmixer['H2_set'],
+            # "flow_air_dry_set": data_gasmixer['air_dry_set'],
+            # "flow_air_wet_set": data_gasmixer['air_wet_set'],
 
-            "flow_H2_act": data_gasmixer['H2_act'],
-            "flow_air_dry_act": data_gasmixer['air_dry_act'],
-            "flow_air_wet_act": data_gasmixer['air_wet_act'],
+            # "flow_H2_act": data_gasmixer['H2_act'],
+            # "flow_air_dry_act": data_gasmixer['air_dry_act'],
+            # "flow_air_wet_act": data_gasmixer['air_wet_act'],
 
             "relais1": data_relais['relais1'],
             "relais2": data_relais['relais2'],

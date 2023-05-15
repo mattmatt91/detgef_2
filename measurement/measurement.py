@@ -8,7 +8,7 @@ from os.path import join
 
 ip = '127.0.0.1'
 port = '9010'
-rate = 1 # measure data every x seconds
+rate = 0.5 # measure data every x seconds
 start_offset = 5
 path_data = "data"
 scheduler = sched.scheduler(time.time,
