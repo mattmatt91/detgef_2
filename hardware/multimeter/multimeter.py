@@ -12,21 +12,19 @@ class Multimeter():
         except visa.Error as ex:
             print('Couldn\'t connect to \'%s\', exiting now...' % VISA_ADDRESS)
             sys.exit()
-        # if self.session.resource_name.startswith('ASRL') or self.session.resource_name.endswith('SOCKET'):
-            # pass
         self.session.read_termination = '\n'
 
-        self.session.write('*IDN?')
-        idn = self.session.read()
+        # self.session.write('*IDN?')
+        # idn = self.session.read()
         # print('*IDN? returned: %s' % idn.rstrip('\n'))
 
     def init_device(self):
         # self.session.write("SET DefaultTimeout to 10")
         # self.session.write(":CONFigure:RESistance (@201,202,203,204)")
-        self.session.write(":ROUTe:SCAN (@201,202,203,204)")
         # print(self.session.read())
-        self.session.write("RES:RANG:AUTO 1")
         # self.session.write(f"RES:NPLC 1")
+        self.session.write(":ROUTe:SCAN (@201,202,203,204)")
+        self.session.write("RES:RANG:AUTO 1")
 
     def get_errors(self):
         err = self.session.query("SYST:ERR?")
