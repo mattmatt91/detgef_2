@@ -31,7 +31,7 @@ def get_sensor_data():
     data_powersupply = powersupply.get_data()
     data_multimeter = multimeter.get_data()
     # data_gasmixer = gasmixer.get_data()
-    data_relais = relais.get_all_states()
+    # data_relais = relais.get_all_states()
 
     data = {
             "timestamp": datetime.now().strftime("%m/%d/%Y - %H:%M:%S"),
@@ -53,10 +53,10 @@ def get_sensor_data():
             # "flow_air_dry_act": data_gasmixer['air_dry_act'],
             # "flow_air_wet_act": data_gasmixer['air_wet_act'],
 
-            "relais1": data_relais['relais1'],
-            "relais2": data_relais['relais2'],
-            "relais3": data_relais['relais3'],
-            "relais4": data_relais['relais4']
+            # "relais1": data_relais['relais1'],
+            # "relais2": data_relais['relais2'],
+            # "relais3": data_relais['relais3'],
+            # "relais4": data_relais['relais4']
         }
 
     return data
@@ -71,6 +71,7 @@ def set_relais(data: dict):
     relais.set_one(2, data['v3'])
     relais.set_one(3, data['v4'])
 
+    gasmixer.open_valve('air_wet')
     gasmixer.set_flow('air_dry', data['air_dry'])
     gasmixer.set_flow('air_wet', data['air_wet'])
     gasmixer.set_flow('H2', data['H2'])
@@ -85,6 +86,10 @@ def set_relais(data: dict):
 @app.get("/start")
 def set_start_param():
     gasmixer.init_device()
+    gasmixer.open_valve_0()
+    gasmixer.open_valve('H2')
+    gasmixer.open_valve('air_dry')
+    gasmixer.open_valve('air_wet')
 
     powersupply.supply_on()
     powersupply.set_current(10)
@@ -103,6 +108,8 @@ def set_stop_param():
     powersupply.close()
 
     multimeter.close()
+
+    gasmixer.close_valve_0()
 
     print('setting end parameter')
     return {'state':'finished'}

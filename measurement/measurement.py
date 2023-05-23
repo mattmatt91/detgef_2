@@ -8,7 +8,7 @@ from os.path import join
 
 ip = '127.0.0.1'
 port = '9010'
-rate = 0.5 # measure data every x seconds
+rate =2  # measure data every x seconds
 start_offset = 5
 path_data = "data"
 scheduler = sched.scheduler(time.time,
@@ -19,13 +19,17 @@ class Measurement():
         self.program = hp.read_json(path_prgram)
         self.bd = Database()
         self.current_step = "prolog"
+        print('init measurement')
         self.run_loop()
     
 
     def start(self):
         response  = requests.get(f'http://{ip}:{port}/start').json()
+        print('starting measurement')
         if response['state'] != 'started':
+            print('exit program, hardware not available')
             exit()
+
         self.add_task_setter() # important -> firt execute add tast setter
         self.add_task_getter()
 
@@ -49,9 +53,13 @@ class Measurement():
     def get_data(self):
         remeaning_time = self.endtime - time.time()
         print(f'remeaning time: {remeaning_time}')
-        response = requests.get(f'http://{ip}:{port}/get_data').json()
-        response["step_id"] = self.current_step
-        self.bd.write_data(response)
+        try:
+            response = requests.get(f'http://{ip}:{port}/get_data').json()
+            response["step_id"] = self.current_step
+            self.bd.write_data(response)
+        except:
+            print('failed to fetch data')
+            pass
         # print(response)
 
     def set_data(self, data:dict):
@@ -62,7 +70,9 @@ class Measurement():
 
     def run_loop(self):
         self.start()
+        print('run scheduler')
         scheduler.run()
+        print('write to file ')
         self.bd.data_to_csv(join(hp.create_folder("data"), "data.csv"))
         self.stop()
         

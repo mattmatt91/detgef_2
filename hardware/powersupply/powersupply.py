@@ -2,7 +2,7 @@ import pyvisa
 from time import sleep
 
 
-address = 'ASRL12::INSTR'
+address = 'COM22'
 
 class Powersupply():
     def __init__(self):
@@ -29,16 +29,29 @@ class Powersupply():
     # SETTER FUNCTIONS
 
     def set_voltage(self, voltage):
-        self.client.write(f'VOLT {float(voltage)}')
+        while self.get_voltage_set() != voltage:
+            sleep(0.1)
+            # print(f'setting voltage to {voltage}')
+            self.client.write(f'VOLT {float(voltage)}')
+            sleep(0.1)
 
     def set_current(self, current):
-        self.client.write(f'CURR {float(current)}')
+        while self.get_current_set() != current:
+            sleep(0.1)
+            self.client.write(f'CURR {float(current)}')
+            sleep(0.1)
 
 
     def set_power(self, power):
-        self.client.write(f'POW {float(power)}')
+        while self.get_power_set() != power:
+            sleep(0.1)
+            self.client.write(f'POW {float(power)}')
+            sleep(0.1)
 
     # GETTER FUNCTIONS
+    def get_output(self):
+        string = self.client.query(f'OUTPut?')
+        return string
 
     def get_voltage_set(self):
         string = self.client.query(f'VOLT?')
@@ -90,10 +103,16 @@ class Powersupply():
         return data
 
     def supply_on(self):
-        self.client.write('OUTP ON')
+        while self.get_output().find('ON')<0:
+            sleep(0.1)
+            self.client.write('OUTP ON')
+            sleep(0.1)
 
     def supply_off(self):
-        self.client.write('OUTP OFF')
+        while self.get_output().find('OFF')<0:
+            sleep(0.1)
+            self.client.write('OUTP OFF')
+            sleep(0.1)
 
     def get_errors(self):
         string = self.client.query('SYSTEM:ERROR:ALL?')
@@ -103,6 +122,7 @@ if __name__ == '__main__':
     powersupply = Powersupply()
     i = 0
     powersupply.supply_on()
+    powersupply.set_voltage(2)
     powersupply.set_current(10)  # was ist der senke betrieb?
     powersupply.set_power(200)
     for i in range(10):

@@ -1,7 +1,7 @@
 
 import serial
 from time import sleep
-port = "COM9"
+port = "COM2"
 baudrate = 9600
 
 class Relais():
@@ -71,7 +71,7 @@ if __name__ == '__main__':
         for i in range(16):
             relais.set_one(i, True)
         print(relais.get_all_states())
-        sleep(0.1)
+        # sleep(0.1)
         for i in range(16):
             relais.set_one(i, False)
         print(relais.get_all_states())

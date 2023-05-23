@@ -2,61 +2,37 @@
     "1": {
         "id": "heatingup",
         "voltage": 4,
-        "H2": 50,
-        "air_dry": 10,
-        "air_wet": 30,
-        "duration": 200,
+        "H2": 0,
+        "air_dry": 200,
+        "air_wet": 200,
+        "duration": 360,
         "v1": true,
         "v2": true,
-        "v3": true,
-        "v4": true
+        "v3": false,
+        "v4": false
     },
     "2": {
         "id": "measuring",
-        "voltage": 2,
-        "H2": 50,
-        "air_dry": 20,
-        "air_wet": 30,
-        "duration": 200,
+        "voltage": 3,
+        "H2": 100,
+        "air_dry": 196,
+        "air_wet": 200,
+        "duration": 360,
         "v1": true,
         "v2": true,
         "v3": true,
-        "v4": true
+        "v4": false
     },
     "3": {
         "id": "cooldown",
-        "voltage": 5,
-        "H2": 50,
-        "air_dry": 10,
-        "air_wet": 30,
-        "duration": 600,
+        "voltage":3,
+        "H2": 0,
+        "air_dry": 200,
+        "air_wet": 200,
+        "duration": 360,
         "v1": true,
         "v2": true,
-        "v3": true,
-        "v4": true
-    },
-    "4": {
-        "id": "cooldown",
-        "voltage": 5,
-        "H2": 50,
-        "air_dry": 10,
-        "air_wet": 30,
-        "duration": 100,
-        "v1": true,
-        "v2": true,
-        "v3": true,
-        "v4": true
-    },
-    "5": {
-        "id": "cooldown",
-        "voltage": 5,
-        "H2": 50,
-        "air_dry": 10,
-        "air_wet": 30,
-        "duration": 100,
-        "v1": true,
-        "v2": true,
-        "v3": true,
-        "v4": true
+        "v3": false,
+        "v4": false
     }
 }

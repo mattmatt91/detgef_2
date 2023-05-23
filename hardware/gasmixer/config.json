@@ -3,19 +3,19 @@
         "channel": 1,
         "flow_max": 500,
         "flow_min": 20,
-        "correction_factor": 20
+        "correction_factor": 100
     },
     "air_wet": {
         "channel": 2,
         "flow_max": 500,
         "flow_min": 20,
-        "correction_factor": 20
+        "correction_factor": 100
     },
     "H2": {
-        "channel": 4,
+        "channel": 3,
         "flow_max": 20,
         "flow_min": 1,
-        "correction_factor": 20,
+        "correction_factor": 100,
         "ppm": 1000
     }
 }
