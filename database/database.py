@@ -14,11 +14,16 @@ class Database():
 
       
     
-    def data_to_csv(self, path:str):
+    def data_to_csv(self, path:str, sensornames:dict):
         df = pd.DataFrame(self.data)
+        try:
+            df = df.rename(sensornames, axis=1)
+        except:
+            pass
         print(df)
         df.to_csv(path, decimal=',', sep=';', index=False)
-      
+
+
 
 if __name__ == '__main__':
     db = Database()

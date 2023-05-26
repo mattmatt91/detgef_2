@@ -40,10 +40,10 @@ def get_sensor_data():
             "current_act": data_powersupply['current_actual'],
             "current_set": data_powersupply['current_set'],
 
-            "res_1": data_multimeter['S1'],
-            "res_2": data_multimeter['S2'],
-            "res_3": data_multimeter['S3'],
-            "res_4": data_multimeter['S4'],
+            "sensor_1": data_multimeter['S1'],
+            "sensor_2": data_multimeter['S2'],
+            "sensor_3": data_multimeter['S3'],
+            "sensor_4": data_multimeter['S4'],
 
             # "flow_H2_set": data_gasmixer['H2_set'],
             # "flow_air_dry_set": data_gasmixer['air_dry_set'],

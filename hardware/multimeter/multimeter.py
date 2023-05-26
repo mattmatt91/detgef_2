@@ -14,9 +14,9 @@ class Multimeter():
             sys.exit()
         self.session.read_termination = '\n'
 
-        # self.session.write('*IDN?')
-        # idn = self.session.read()
-        # print('*IDN? returned: %s' % idn.rstrip('\n'))
+        self.session.write('*IDN?')
+        idn = self.session.read()
+        print('*IDN? returned: %s' % idn.rstrip('\n'))
 
     def init_device(self):
         # self.session.write("SET DefaultTimeout to 10")

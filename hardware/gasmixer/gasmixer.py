@@ -80,6 +80,7 @@ class Gasmixer():
         channel = self.channels[cnl]['channel']
         max_flow = self.channels[cnl]['flow_max']
         new_flow = round((flow/max_flow)*1000)
+        print(new_flow,max_flow, flow, '\n\n\n\n\n')
         # print(new_flow, '\n'*100)
         with serial.Serial(**self.args) as ser:
             ser.write(convert_to_ascii(f'FS{channel} {new_flow}\r\n'))

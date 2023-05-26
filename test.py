@@ -1,5 +1,11 @@
 import pandas as pd
+mydict = {"a":[1,2,3,4],"b":[10,12,13,14],"c":[21,22,23,24],"sensors":{"1":"test","2":"test2"}}
 
+sensors = mydict.pop('sensors')
 
-df = pd.read_csv('data\\05_15_2023-17_05_15\\data.csv')
-df[['S2', 'S3', 'S4']].plot().show()
+print(sensors)
+print(mydict)
+
+df = pd.DataFrame(mydict)
+df = df.rename({'a':'log(gdp)'}, axis=1)
+print(df)

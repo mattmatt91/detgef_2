@@ -16,7 +16,9 @@ scheduler = sched.scheduler(time.time,
 
 class Measurement():
     def __init__(self, path_prgram: str) -> None:
-        self.program = hp.read_json(path_prgram)
+        program = hp.read_json(path_prgram)
+        self.sensor_names = program.pop('sensors')
+        self.program = program
         self.bd = Database()
         self.current_step = "prolog"
         print('init measurement')
@@ -57,14 +59,15 @@ class Measurement():
             response = requests.get(f'http://{ip}:{port}/get_data').json()
             response["step_id"] = self.current_step
             self.bd.write_data(response)
+            print(response)
         except:
             print('failed to fetch data')
             pass
-        # print(response)
 
     def set_data(self, data:dict):
         self.current_step = data['id']
         print(f'setting data: {self.current_step}')
+        print(data)
         requests.post(f'http://{ip}:{port}/set_data', json=data)
 
 

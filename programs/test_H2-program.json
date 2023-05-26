@@ -250,5 +250,11 @@
         "v2": true,
         "v3": false,
         "v4": false
+    },
+    "sensors":{
+        "sensor_1":"009_BaTiRho",
+        "sensor_2":"010_BaTiRho",
+        "sensor_3":"017_Y2O3",
+        "sensor_4":"018_Y2O3"
     }
 }

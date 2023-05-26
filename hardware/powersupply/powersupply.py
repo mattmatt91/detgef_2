@@ -29,6 +29,7 @@ class Powersupply():
     # SETTER FUNCTIONS
 
     def set_voltage(self, voltage):
+        voltage = voltage*4 # ################################################################################################ let op
         while self.get_voltage_set() != voltage:
             sleep(0.1)
             # print(f'setting voltage to {voltage}')
